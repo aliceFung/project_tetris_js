@@ -1,0 +1,6 @@
+#board {
+  border: solid black 2px;
+  position: relative;
+  left: 12%;
+  top: 2em;
+}
