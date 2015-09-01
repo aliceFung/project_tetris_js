@@ -12,12 +12,16 @@ controller = {
   gameLoop: function(){
     view.clearBoard();        //clearBoard
     controller.movePiece();   //moves piece down
-    
     view.drawPiece(model.currentPiece); //
+    console.log('running');
   },
 
-  movePiece: function(){
+  movePiece: function(xAmt){
+    if (xAmt){
+      model.movePieceOnX(xAmt);
+    } else {
     model.movePieceDown();
+    }
   }
 
 };
@@ -41,6 +45,15 @@ model = {
   movePieceDown: function(){
     if (model.checkCollision(model.currentPiece)){
       model.currentPiece.y += 1;
+    }
+  },
+
+  movePieceOnX: function(xAmt){
+    piece = model.currentPiece;
+    // console.log('moving '+ piece.x+ ' ' + xAmt);
+    nextX = piece.x+ xAmt;
+    if (nextX >= 0 && nextX <= (view.canvas.width - piece.width)){
+      piece.x += xAmt;
     }
   },
 
@@ -97,7 +110,8 @@ view = {
 
   changePieceColumn: function(event){
     if (event.which == 37 || event.which == 39){
-      model.currentPiece.x += view.userMove[event.which] * 40;
+      var xSpace = view.userMove[event.which] * 40;
+      controller.movePiece(xSpace);
     }
 
     if (event.which == 40){
