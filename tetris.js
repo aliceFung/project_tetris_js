@@ -1,32 +1,29 @@
 controller = {
 
-  currentPiece: 0,
-
   init: function(){
     //testing
-    model.init();
-    view.drawPiece(model.piece);
+    model.init(); // creates 1 new piece
+    view.drawPiece(model.currentPiece); //draws piece
     setInterval(this.gameLoop, 1000);
   },
 
   gameLoop: function(){
-    view.clearBoard();
-    controller.movePiece();
-    view.drawPiece(currentPiece);
+    view.clearBoard();        //clearBoard
+    controller.movePiece();   //moves piece down
+    view.drawPiece(model.currentPiece); //
   },
 
   movePiece: function(){
-    currentPiece = model.piece;
-    currentPiece.y+= 40; //40 = 1x1 minipiece
+    model.movePieceDown();
   }
 
 };
 
 model = {
-  piece: 0,
+  // currentPiece: 0,
 
   init: function(){
-    model.piece = new model.SmallPiece(200,200);
+    model.currentPiece = new model.SmallPiece(200,200);
   },
 
   //Constructor
@@ -34,7 +31,16 @@ model = {
       this.x = x;
       this.y = y;
       this.width = 40;
-      this.height = 40;
+      this.height = 20;
+  },
+
+  movePieceDown: function(){
+    model.currentPiece.y += 40;
+  },
+
+  dropPiece: function(){
+    //drop piece all the way to bottom
+    //check where lowest point before existing
   },
 
   square: {
@@ -52,7 +58,7 @@ model = {
 view = {
 
   ctx: $("#board")[0].getContext("2d"),
-
+  canvas: $("#board")[0],
 
   //add listeners
   init: function(){
@@ -63,24 +69,24 @@ view = {
   },
 
   clearBoard: function(){
-    view.ctx.clearRect(0,0, 400, 800); //overwriting canvas
+    view.ctx.clearRect(0,0, view.canvas.width, view.canvas.height); //overwriting canvas
   },
 
   drawPiece: function(piece){
-      view.ctx.rect(piece.x,piece.y,piece.width,piece.height);
-      view.ctx.stroke();
-
+    // view.clearBoard();
+    // view.ctx.clearRect(0,0, view.canvas.width, view.canvas.height);
+    view.ctx.rect(piece.x, piece.y, piece.width, piece.height);
+    view.ctx.stroke();
   },
 
   changePieceColumn: function(event){
     if (event.which == 37 || event.which == 39){
-      model.piece.x += view.userMove[event.which] * 0.25;
+      model.piece.x += view.userMove[event.which] * 40;
     }
 
     if (event.which == 40){
       model.dropPiece();
     }
-    // this.currentDirection += this.userMove[event.which];
   },
 
   userMove: {
