@@ -23,16 +23,33 @@ controller = {
     } else {
     model.movePieceDown();
     }
+  },
 
+  dropPiece: function(){
+    model.dropPiece();
   }
 
 };
 
 model = {
-  // currentPiece: 0,
+
+  board: [],
+  rows: new Array(20),
 
   init: function(){
-    model.currentPiece = new model.SmallPiece(200,200);
+    model.createPiece();
+    for (var i=0; i < model.rows.length; i++){
+      model.rows[i] = {};
+    }
+  },
+
+  createPiece: function(){
+    model.currentPiece = new model.SmallPiece(model.randomX(),0);
+  },
+
+  //generates random X coordinate @ 40 increments
+  randomX: function(){
+    return Math.floor(Math.random()*10)*40;
   },
 
   //Constructor
@@ -45,23 +62,19 @@ model = {
   },
 
   movePieceDown: function(){
-    if (!model.checkCollision(model.currentPiece) && !model.reachedBottom()){
+    if (!model.collisionDetected() && !model.reachedBottom()){
       model.currentPiece.y += 1;
     }else if (model.reachedBottom() || model.occupiedSpace()){
       model.bottomBlocks();
-    } 
+    }
   },
-  
-  board: [],
 
   bottomBlocks: function(){
     model.board.push(model.currentPiece);
-    model.init();
-
+    model.addToRow();
+    model.checkRows();
+    model.createPiece();
   },
-
-
-
 
   movePieceOnX: function(xAmt){
     piece = model.currentPiece;
@@ -73,33 +86,79 @@ model = {
   },
 
   dropPiece: function(){
-    //drop piece all the way to bottom
-    //check where lowest point before existing
+    while (!model.collisionDetected()){
+      model.movePieceDown();
+    }
+    model.bottomBlocks();
   },
 
-  checkCollision: function(piece){
-    
+  collisionDetected: function(){
+    var piece = model.currentPiece;
     if (piece.x < 0 || piece.x > view.canvas.width - piece.width || piece.y > view.canvas.height - piece.height - 1){
-        return  true;
-    }else if (model.occupiedSpace()){
-          return true
-        }
-    else{
+      return  true;
+    } else if (model.occupiedSpace()){
+      return true;
+    } else{
       return false;
     }
   },
 
   occupiedSpace: function(){
-    var piece = model.currentPiece
+    var piece = model.currentPiece;
       for (var i = 0;i < model.board.length; i++ ){
         if (piece.x == model.board[i].x && piece.y + piece.height >= model.board[i].y){
           return true;
-        };  
-      };
+        }
+      }
   },
 
   reachedBottom: function(){
     return model.currentPiece.y + model.currentPiece.height >= view.canvas.height;
+  },
+
+  addToRow: function(){
+    console.log('addToRow');
+    var index = model.currentPiece.x/40;
+    var row = model.currentPiece.y/40;
+    model.rows[row][index] = true;
+  },
+
+  checkRows: function(){
+    console.log('running checkRows');
+    var count;
+    //go through all rows from bottom up
+    for (var y = 19; y >= 0; y--){
+      count = 0;
+      // if row exists
+      if(model.rows[y]){
+        //go through all cells in row if rows exist
+        for (var x=0; x< 10; x++){
+          if (model.rows[y][x]){
+            count++;
+          }
+        }
+        console.log('checking row ' + x + "count "+ count);
+        //if all cells filled
+        if (count === 10){
+          model.clearRow(x);
+        }
+      }
+    }
+  },
+
+  clearRow: function(row){
+    console.log('clearing row');
+    //find and remove all row pieces in board
+    var xCoord = row*40;
+    for(var i=0; i<model.board.length; i++){
+      if(model.board[i].x === xCoord){
+        model.board.splice(i,1);
+      }
+    }
+    //remove row
+    model.rows.splice(row,1);
+    //add empty row
+    model.rows.push(undefined);
   },
 
   square: {
@@ -147,14 +206,14 @@ view = {
     }
 
     if (event.which == 40){
-      model.dropPiece();
+      controller.dropPiece();
     }
   },
 
   renderBoard: function(board){
     for (var i =  board.length - 1; i >= 0; i--) {
         view.drawPiece(board[i]);
-     }; 
+     };
   },
 
   userMove: {
