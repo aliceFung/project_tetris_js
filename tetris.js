@@ -43,10 +43,11 @@ model = {
   },
 
   movePieceDown: function(){
-    if (model.checkCollision(model.currentPiece)){
+    if (model.checkCollision(model.currentPiece) && !model.reachedBottom()){
       model.currentPiece.y += 1;
     }
   },
+
 
   movePieceOnX: function(xAmt){
     piece = model.currentPiece;
@@ -68,6 +69,10 @@ model = {
     }else{
       return true;
     }
+  },
+
+  reachedBottom: function(){
+    currentPiece.y + currentPiece.height >= view.canvas.height;
   },
 
   square: {
