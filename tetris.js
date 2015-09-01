@@ -11,9 +11,10 @@ controller = {
 
   gameLoop: function(){
     view.clearBoard();        //clearBoard
+    view.renderBoard(model.board);
     controller.movePiece();   //moves piece down
     view.drawPiece(model.currentPiece); //
-    console.log('running');
+    console.log('tick');
   },
 
   movePiece: function(xAmt){
@@ -22,6 +23,7 @@ controller = {
     } else {
     model.movePieceDown();
     }
+
   }
 
 };
@@ -43,10 +45,22 @@ model = {
   },
 
   movePieceDown: function(){
-    if (model.checkCollision(model.currentPiece) && !model.reachedBottom()){
+    if (!model.checkCollision(model.currentPiece) && !model.reachedBottom()){
       model.currentPiece.y += 1;
-    }
+    }else if (model.reachedBottom() || model.occupiedSpace()){
+      model.bottomBlocks();
+    } 
   },
+  
+  board: [],
+
+  bottomBlocks: function(){
+    model.board.push(model.currentPiece);
+    model.init();
+
+  },
+
+
 
 
   movePieceOnX: function(xAmt){
@@ -64,15 +78,28 @@ model = {
   },
 
   checkCollision: function(piece){
+    
     if (piece.x < 0 || piece.x > view.canvas.width - piece.width || piece.y > view.canvas.height - piece.height - 1){
-        return false;
-    }else{
-      return true;
+        return  true;
+    }else if (model.occupiedSpace()){
+          return true
+        }
+    else{
+      return false;
     }
   },
 
+  occupiedSpace: function(){
+    var piece = model.currentPiece
+      for (var i = 0;i < model.board.length; i++ ){
+        if (piece.x == model.board[i].x && piece.y + piece.height >= model.board[i].y){
+          return true;
+        };  
+      };
+  },
+
   reachedBottom: function(){
-    currentPiece.y + currentPiece.height >= view.canvas.height;
+    return model.currentPiece.y + model.currentPiece.height >= view.canvas.height;
   },
 
   square: {
@@ -122,6 +149,12 @@ view = {
     if (event.which == 40){
       model.dropPiece();
     }
+  },
+
+  renderBoard: function(board){
+    for (var i =  board.length - 1; i >= 0; i--) {
+        view.drawPiece(board[i]);
+     }; 
   },
 
   userMove: {
