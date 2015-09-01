@@ -140,18 +140,18 @@ model = {
         console.log('checking row ' + x + "count "+ count);
         //if all cells filled
         if (count === 10){
-          model.clearRow(x);
+          model.clearRow(y);
         }
       }
     }
   },
 
   clearRow: function(row){
-    console.log('clearing row');
+    console.log('clearing row '+ row );
     //find and remove all row pieces in board
-    var xCoord = row*40;
+    var yCoord = row*40;
     for(var i=0; i<model.board.length; i++){
-      if(model.board[i].x === xCoord){
+      if(model.board[i].y === yCoord){
         model.board.splice(i,1);
       }
     }
