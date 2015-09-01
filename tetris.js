@@ -1,15 +1,36 @@
 controller = {
 
+  currentPiece: 0,
+
   init: function(){
-    var piece = new model.smallPiece(200,200)
-    view.drawPiece(piece);
+    //testing
+    model.init();
+    view.drawPiece(model.piece);
+    setInterval(this.gameLoop, 1000);
+  },
+
+  gameLoop: function(){
+    view.clearBoard();
+    controller.movePiece();
+    view.drawPiece(currentPiece);
+  },
+
+  movePiece: function(){
+    currentPiece = model.piece;
+    currentPiece.y+= 40; //40 = 1x1 minipiece
   }
 
 };
 
 model = {
+  piece: 0,
 
-  smallPiece: function(x,y){
+  init: function(){
+    model.piece = new model.SmallPiece(200,200);
+  },
+
+  //Constructor
+  SmallPiece: function(x,y){
       this.x = x;
       this.y = y;
       this.width = 40;
@@ -39,7 +60,10 @@ view = {
       view.changePieceColumn(event);
     });
 
+  },
 
+  clearBoard: function(){
+    view.ctx.clearRect(0,0, 400, 800); //overwriting canvas
   },
 
   drawPiece: function(piece){
