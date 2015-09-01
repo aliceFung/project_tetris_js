@@ -31,7 +31,7 @@ model = {
       this.x = x;
       this.y = y;
       this.width = 40;
-      this.height = 20;
+      this.height = 40;
   },
 
   movePieceDown: function(){
