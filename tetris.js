@@ -36,7 +36,7 @@ model = {
   board: [],
   rows: new Array(20),
   pieceSize: 40,
-  pieces: model.currentPiece.pieces,
+  // pieces: model.currentPiece.pieces,
 
   init: function(){
     model.createPiece();
@@ -46,11 +46,13 @@ model = {
   },
 
   createPiece: function(){
+    console.log('piece created');
     var shapes = [model.Square,model.I, model.J, model.T, model.Z, model.S, model.L];
     selection = Math.floor((Math.random() * 7));
 
     model.currentPiece = new shapes[selection](model.randomX(),0);
     // new model.SmallPiece(model.randomX(),0);
+    model.pieces = model.currentPiece.pieces;
   },
 
   //generates random X coordinate @ 40 increments
@@ -156,15 +158,19 @@ model = {
   },
 
   updateShapeCoord: function(xAmt, yAmt){
+    console.log('update shape coord');
     xAmt = xAmt || 0;
     yAmt = yAmt || 0;
-    for(var i=0; i< pieces; i++){
-      pieces[i].x += xAmt;
-      pieces[i].y += yAmt;
+    for(var i=0; i< model.pieces; i++){
+      model.pieces[i].x += xAmt;
+      model.pieces[i].y += yAmt;
     }
+    model.currentPiece.x +=xAmt;
+    model.currentPiece.y +=yAmt;
   },
 
   movePieceDown: function(){
+    console.log('move piece down');
     if (!model.collisionDetected() && !model.reachedBottom()){
       model.updateShapeCoord(0, 1);
       // model.currentPiece.y += 1;
@@ -175,7 +181,7 @@ model = {
 
   //stop movement because can't move down anymore, piece is finished
   bottomBlocks: function(){
-    for(var i=0; i< pieces; i++){
+    for(var i=0; i< model.pieces; i++){
       model.board.push(pieces[i]);
       model.addToRow(pieces[i]);
     }
@@ -184,6 +190,7 @@ model = {
   },
 
   movePieceOnX: function(xAmt){  //need to add collision for left/right
+    console.log('move piece on x');
     var pieces = model.currentPiece.pieces;
     var okPieces = 0;
     //check every piece of shape if valid to move
@@ -192,7 +199,7 @@ model = {
       // console.log('moving '+ piece.x+ ' ' + xAmt);
       nextX = piece.x+ xAmt;
       //checking borders
-      if (nextX >= 0 && nextX <= (view.canvas.width - piece.width) && !model.occupiedSpace([nextX])){
+      if (nextX >= 0 && nextX <= (view.canvas.width - piece.width) && !model.occupiedSpace()){
         okPieces ++;
         // piece.x += xAmt;
       }
@@ -240,10 +247,11 @@ model = {
       if(!nextX){nextX = piece.x;}
 
       if (model.rows[Math.floor(piece.y/40+1)][nextX/40]){
-       return true;
+       occupied = true;
       }
       count++;
     }
+    return occupied;
   },
 
   // not changed for each piece yet
