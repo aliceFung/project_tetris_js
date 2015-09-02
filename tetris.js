@@ -91,6 +91,7 @@ model = {
     piece = model.currentPiece;
     // console.log('moving '+ piece.x+ ' ' + xAmt);
     nextX = piece.x+ xAmt;
+
     //checking borders
     if (nextX >= 0 && nextX <= (view.canvas.width - piece.width) && !model.occupiedSpace(nextX)){
       piece.x += xAmt;
@@ -106,9 +107,7 @@ model = {
 
   collisionDetected: function(nextX){
     var piece = model.currentPiece;
-    // if (nextX){
-    //   piece.x = nextX;
-    // }
+
     if (piece.x < 0 || piece.x > view.canvas.width - piece.width || piece.y > view.canvas.height - piece.height - 1){
       return  true;
     } else if (model.occupiedSpace()){
@@ -120,15 +119,15 @@ model = {
 
   occupiedSpace: function(nextX){
     var piece = model.currentPiece;
-    //if(!!nextX){ nextX = piece.x};
-    //if (model.rows[Math.floor(piece.y/40)][nextX/40])
-    //  return true;
+    var rowToCheck;
 
-    for (var i = 0;i < model.board.length; i++ ){
-      if (piece.x == model.board[i].x && piece.y + piece.height >= model.board[i].y){
-        return true;
-      }
+    // setting default
+    if(!nextX){nextX = piece.x;}
+
+    if (model.rows[Math.floor(piece.y/40+1)][nextX/40]){
+     return true;
     }
+
   },
 
   reachedBottom: function(){
@@ -201,16 +200,12 @@ view = {
   },
 
   clearBoard: function(){
-    view.ctx.clearRect(0,0, view.canvas.width, view.canvas.height); //overwriting canvas
-
+    //overwriting canvas
+    view.ctx.clearRect(0,0, view.canvas.width, view.canvas.height);
   },
 
   drawPiece: function(piece){
-    // view.clearBoard();
-    // view.ctx.clearRect(0,0, view.canvas.width, view.canvas.height);
     view.ctx.strokeRect(piece.x, piece.y, piece.width, piece.height);
-    // view.ctx.stroke();
-
   },
 
   changePieceColumn: function(event){
@@ -227,7 +222,7 @@ view = {
   renderBoard: function(board){
     for (var i =  board.length - 1; i >= 0; i--) {
         view.drawPiece(board[i]);
-     };
+    }
   },
 
   userMove: {
