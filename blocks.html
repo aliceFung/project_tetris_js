@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Tetris</title>
+<script>
+var ctx; //Canvas object
+
+/************************************************
+Initialize the drawing canvas
+************************************************/
+function initialize() {
+
+  //Get the canvas context object from the body
+  c = document.getElementById("myCanvas");
+  ctx = c.getContext("2d");
+  
+  //Draw test tetriminos
+  drawTetrimino(1,2,0,0);
+  // drawTetrimino(3,2,0,1);
+  // drawTetrimino(6,2,0,2);
+  // drawTetrimino(9,2,0,3);
+  // drawTetrimino(1,5,1,0);
+  // drawTetrimino(3,5,1,1);
+  // drawTetrimino(6,5,1,2);
+  // drawTetrimino(9,5,1,3);
+  // drawTetrimino(1,8,2,0);
+  // drawTetrimino(3,8,2,1);
+  // drawTetrimino(6,8,2,2);
+  // drawTetrimino(9,8,2,3);
+  // drawTetrimino(0,11,3,0);
+  // drawTetrimino(2,11,3,1);
+  // drawTetrimino(4,11,3,2);
+  // drawTetrimino(6,11,3,3);
+  // drawTetrimino(1,13,4,0);
+  // drawTetrimino(3,13,4,1);
+  // drawTetrimino(6,13,4,2);
+  // drawTetrimino(9,13,4,3);
+  // drawTetrimino(1,16,5,0);
+  // drawTetrimino(3,16,5,1);
+  // drawTetrimino(6,16,5,2);
+  // drawTetrimino(9,16,5,3);
+  // drawTetrimino(1,18,6,0);
+  // drawTetrimino(4,19,6,2);
+  // drawTetrimino(6,18,6,1);
+  // drawTetrimino(9,18,6,3);
+}
+
+
+/************************************************
+Draws a block at the specified game coordinate
+x = [0,9] x-coordinate
+y = [0,19]  y-coordinate
+c = [0,360] color hue
+************************************************/
+function drawBlock(x, y, c) {
+  
+  //Convert game coordinaes to pixel coordinates
+  pixelX = x*20;
+  pixelY = (19-y)*20;
+  
+  
+  /**** Draw the center part of the block ****/
+  
+  //Set the fill color using the supplied color
+  ctx.fillstyle="hsl(" + c + ",100%,50%)";
+  
+  //Create a filled rectangle
+  ctx.fillRect(pixelX+2,pixelY+2,16,16);
+  
+
+  /**** Draw the top part of the block ****/
+  
+  //Set the fill color slightly lighter
+  ctx.fillstyle="hsl(" + c + ",100%,70%)";
+  
+  //Create the top polygon and fill it
+  ctx.beginPath();
+  ctx.moveTo(pixelX,pixelY);
+  ctx.lineTo(pixelX+20,pixelY);
+  ctx.lineTo(pixelX+18,pixelY+2);
+  ctx.lineTo(pixelX+2,pixelY+2);
+  ctx.fill();
+  
+  
+  /**** Draw the sides of the block ****/
+  
+  //Set the fill color slightly darker
+  ctx.fillstyle="hsl(" + c + ",100%,40%)";
+  
+  //Create the left polygon and fill it
+  ctx.beginPath();
+  ctx.moveTo(pixelX,pixelY);
+  ctx.lineTo(pixelX,pixelY+20);
+  ctx.lineTo(pixelX+2,pixelY+18);
+  ctx.lineTo(pixelX+2,pixelY+2);
+  ctx.fill();
+  
+  //Create the right polygon and fill it
+  ctx.beginPath();
+  ctx.moveTo(pixelX+20,pixelY);
+  ctx.lineTo(pixelX+20,pixelY+20);
+  ctx.lineTo(pixelX+18,pixelY+18);
+  ctx.lineTo(pixelX+18,pixelY+2);
+  ctx.fill();
+  
+  
+  /**** Draw the bottom part of the block ****/
+  
+  //Set the fill color much darker
+  ctx.fillstyle="hsl(" + c + ",100%,30%)";
+  
+  //Create the bottom polygon and fill it
+  ctx.beginPath();
+  ctx.moveTo(pixelX,pixelY+20);
+  ctx.lineTo(pixelX+20,pixelY+20);
+  ctx.lineTo(pixelX+18,pixelY+18);
+  ctx.lineTo(pixelX+2,pixelY+18);
+  ctx.fill();
+}
+
+
+/*************************************************
+Draws a tetrimino at the specified game coordinate
+with the specified orientation
+x = [0,9] x-coordinate
+y = [0,19]  y-coordinate
+t = [0,6] tetrimino type
+o = [0,3]   orientation
+*************************************************/
+function drawTetrimino(x,y,t,o) {
+
+  /**** Pick the appropriate tetrimino type ****/
+  if(t == 0) { //I Type
+    
+    c = 180; //Cyan
+    
+    //Get orientation
+    if(o == 0) {
+      drawBlock(x-1,y,c);
+      drawBlock(x,y,c);
+      drawBlock(x+1,y,c);
+      drawBlock(x+2,y,c);
+    }
+    else if(o == 1) {
+      drawBlock(x+1,y+1,c);
+      drawBlock(x+1,y,c);
+      drawBlock(x+1,y-1,c);
+      drawBlock(x+1,y-2,c);
+    }
+    else if(o == 2) {
+      drawBlock(x-1,y-1,c);
+      drawBlock(x,y-1,c);
+      drawBlock(x+1,y-1,c);
+      drawBlock(x+2,y-1,c);
+    }
+    else if(o == 3) {
+      drawBlock(x,y+1,c);
+      drawBlock(x,y,c);
+      drawBlock(x,y-1,c);
+      drawBlock(x,y-2,c);
+    }
+  }
+  if(t == 1) { //J Type
+    
+    c = 240; //Blue
+    
+    //Get orientation
+    if(o == 0) {
+      drawBlock(x-1,y+1,c);
+      drawBlock(x-1,y,c);
+      drawBlock(x,y,c);
+      drawBlock(x+1,y,c);
+    }
+    else if(o == 1) {
+      drawBlock(x+1,y+1,c);
+      drawBlock(x,y+1,c);
+      drawBlock(x,y,c);
+      drawBlock(x,y-1,c);
+    }
+    else if(o == 2) {
+      drawBlock(x-1,y,c);
+      drawBlock(x,y,c);
+      drawBlock(x+1,y,c);
+      drawBlock(x+1,y-1,c);
+    }
+    else if(o == 3) {
+      drawBlock(x,y+1,c);
+      drawBlock(x,y,c);
+      drawBlock(x,y-1,c);
+      drawBlock(x-1,y-1,c);
+    }
+  }
+  if(t == 2) { //L Type
+    
+    c = 40; //Orange
+    
+    //Get orientation
+    if(o == 0) {
+      drawBlock(x-1,y,c);
+      drawBlock(x,y,c);
+      drawBlock(x+1,y,c);
+      drawBlock(x+1,y+1,c);
+    }
+    else if(o == 1) {
+      drawBlock(x,y+1,c);
+      drawBlock(x,y,c);
+      drawBlock(x,y-1,c);
+      drawBlock(x+1,y-1,c);
+    }
+    else if(o == 2) {
+      drawBlock(x-1,y-1,c);
+      drawBlock(x-1,y,c);
+      drawBlock(x,y,c);
+      drawBlock(x+1,y,c);
+    }
+    else if(o == 3) {
+      drawBlock(x-1,y+1,c);
+      drawBlock(x,y+1,c);
+      drawBlock(x,y,c);
+      drawBlock(x,y-1,c);
+    }
+  }
+  if(t == 3) { //O Type
+    
+    c = 60; //Yellow
+    
+    //Orientation doesn't matter
+    drawBlock(x,y,c);
+    drawBlock(x+1,y,c);
+    drawBlock(x,y-1,c);
+    drawBlock(x+1,y-1,c);
+  }
+  if(t == 4) { //S Type
+    
+    c = 120; //Green
+    
+    //Get orientation
+    if(o == 0) {
+      drawBlock(x-1,y,c);
+      drawBlock(x,y,c);
+      drawBlock(x,y+1,c);
+      drawBlock(x+1,y+1,c);
+    }
+    else if(o == 1) {
+      drawBlock(x,y+1,c);
+      drawBlock(x,y,c);
+      drawBlock(x+1,y,c);
+      drawBlock(x+1,y-1,c);
+    }
+    else if(o == 2) {
+      drawBlock(x-1,y-1,c);
+      drawBlock(x,y-1,c);
+      drawBlock(x,y,c);
+      drawBlock(x+1,y,c);
+    }
+    else if(o == 3) {
+      drawBlock(x-1,y+1,c);
+      drawBlock(x-1,y,c);
+      drawBlock(x,y,c);
+      drawBlock(x,y-1,c);
+    }
+  }
+  if(t == 5) { //T Type
+    
+    c = 280; //Purple
+    
+    //Get orientation
+    if(o == 0) {
+      drawBlock(x-1,y,c);
+      drawBlock(x,y,c);
+      drawBlock(x+1,y,c);
+      drawBlock(x,y+1,c);
+    }
+    else if(o == 1) {
+      drawBlock(x,y+1,c);
+      drawBlock(x,y,c);
+      drawBlock(x,y-1,c);
+      drawBlock(x+1,y,c);
+    }
+    else if(o == 2) {
+      drawBlock(x-1,y,c);
+      drawBlock(x,y,c);
+      drawBlock(x+1,y,c);
+      drawBlock(x,y-1,c);
+    }
+    else if(o == 3) {
+      drawBlock(x,y+1,c);
+      drawBlock(x,y,c);
+      drawBlock(x,y-1,c);
+      drawBlock(x-1,y,c);
+    }
+  }
+  if(t == 6) { //Z Type
+    
+    c = 0; //Red
+    
+    //Get orientation
+    if(o == 0) {
+      drawBlock(x-1,y+1,c);
+      drawBlock(x,y+1,c);
+      drawBlock(x,y,c);
+      drawBlock(x+1,y,c);
+    }
+    else if(o == 1) {
+      drawBlock(x+1,y+1,c);
+      drawBlock(x+1,y,c);
+      drawBlock(x,y,c);
+      drawBlock(x,y-1,c);
+    }
+    else if(o == 2) {
+      drawBlock(x-1,y,c);
+      drawBlock(x,y,c);
+      drawBlock(x,y-1,c);
+      drawBlock(x+1,y-1,c);
+    }
+    else if(o == 3) {
+      drawBlock(x,y+1,c);
+      drawBlock(x,y,c);
+      drawBlock(x-1,y,c);
+      drawBlock(x-1,y-1,c);
+    }
+  }
+}
+</script>
+<body onload="initialize();" style="background-color:#EEEEEE">
+<canvas id="myCanvas" height="400px" width="200px" style="background-color:#444444"></canvas>
+<div style="background-color:#CCCCCC">
+    Score: 0
+</div>
+</body>
+</html>
