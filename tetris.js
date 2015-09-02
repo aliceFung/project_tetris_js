@@ -36,6 +36,7 @@ model = {
   board: [],
   rows: new Array(20),
   pieceSize: 40,
+  pieces: model.currentPiece.pieces,
 
   init: function(){
     model.createPiece();
@@ -115,7 +116,7 @@ model = {
     this.x = x;
     this.y = y;
     this.width = model.pieceSize * 2;
-    this.height = model.pieceSize * 3;    
+    this.height = model.pieceSize * 3;
   },
 
   T: function(x,y){
@@ -139,7 +140,7 @@ model = {
     this.x = x;
     this.y = y;
     this.width = model.pieceSize * 3;
-    this.height = model.pieceSize * 2;   
+    this.height = model.pieceSize * 2;
   },
 
   Z: function(x,y){
@@ -154,31 +155,51 @@ model = {
     this.height = model.pieceSize * 2;
   },
 
-
+  updateShapeCoord: function(xAmt, yAmt){
+    xAmt = xAmt || 0;
+    yAmt = yAmt || 0;
+    for(var i=0; i< pieces; i++){
+      pieces[i].x += xAmt;
+      pieces[i].y += yAmt;
+    }
+  },
 
   movePieceDown: function(){
     if (!model.collisionDetected() && !model.reachedBottom()){
-      model.currentPiece.y += 1;
+      model.updateShapeCoord(0, 1);
+      // model.currentPiece.y += 1;
     }else if (model.reachedBottom() || model.occupiedSpace()){
       model.bottomBlocks();
     }
   },
 
+  //stop movement because can't move down anymore, piece is finished
   bottomBlocks: function(){
-    model.board.push(model.currentPiece);
-    model.addToRow();
+    for(var i=0; i< pieces; i++){
+      model.board.push(pieces[i]);
+      model.addToRow(pieces[i]);
+    }
     model.checkRows();
     model.createPiece();
   },
 
   movePieceOnX: function(xAmt){  //need to add collision for left/right
-    piece = model.currentPiece;
-    // console.log('moving '+ piece.x+ ' ' + xAmt);
-    nextX = piece.x+ xAmt;
-
-    //checking borders
-    if (nextX >= 0 && nextX <= (view.canvas.width - piece.width) && !model.occupiedSpace(nextX)){
-      piece.x += xAmt;
+    var pieces = model.currentPiece.pieces;
+    var okPieces = 0;
+    //check every piece of shape if valid to move
+    for(var i=0; i< pieces; i++){
+      var piece = pieces[i];
+      // console.log('moving '+ piece.x+ ' ' + xAmt);
+      nextX = piece.x+ xAmt;
+      //checking borders
+      if (nextX >= 0 && nextX <= (view.canvas.width - piece.width) && !model.occupiedSpace([nextX])){
+        okPieces ++;
+        // piece.x += xAmt;
+      }
+    }
+    //ok to change x coord
+    if(okPieces === pieces.length){
+      model.updateShapeCoord(xAmt);
     }
   },
 
@@ -190,39 +211,55 @@ model = {
   },
 
   collisionDetected: function(nextX){
-    var piece = model.currentPiece;
-
-    if (piece.x < 0 || piece.x > view.canvas.width - piece.width || piece.y > view.canvas.height - piece.height - 1){
-      return  true;
-    } else if (model.occupiedSpace()){
-      return true;
-    } else{
-      return false;
+    var pieces = model.currentPiece.pieces;
+    var count = 0;
+    var collided = false;
+    // for(i= 0; i < pieces.length; i++){
+    while(!collided && count < pieces.length){
+      var piece = pieces[count];
+      if (piece.x < 0 || piece.x > view.canvas.width - piece.width || piece.y > view.canvas.height - piece.height - 1){
+        collided = true;
+      } else if (model.occupiedSpace()){
+        collided = true;
+      } else{
+        collided = false;
+      }
+      count ++;
     }
+    return collided;
   },
 
   occupiedSpace: function(nextX){
-    var piece = model.currentPiece;
+    var pieces = model.currentPiece.pieces;
     var rowToCheck;
+    var occupied = false;
+    var count = 0;
+    while(!occupied && count < pieces.length){
+      var piece = pieces[count];
+      // setting default
+      if(!nextX){nextX = piece.x;}
 
-    // setting default
-    if(!nextX){nextX = piece.x;}
-
-    if (model.rows[Math.floor(piece.y/40+1)][nextX/40]){
-     return true;
+      if (model.rows[Math.floor(piece.y/40+1)][nextX/40]){
+       return true;
+      }
+      count++;
     }
-
   },
 
+  // not changed for each piece yet
   reachedBottom: function(){
     return model.currentPiece.y + model.currentPiece.height >= view.canvas.height;
   },
 
-  addToRow: function(){
+  // sets cell status to occupied or not
+  addToRow: function(piece){
     console.log('addToRow');
-    var index = model.currentPiece.x/40;
-    var row = model.currentPiece.y/40;
-    model.rows[row][index] = true;
+    // for(var i=0; i < model.pieces.length; i++){
+    //   piece = model.pieces[i];
+      var index = piece.x/40;
+      var row = piece.y/40;
+      model.rows[row][index] = true;
+    // }
   },
 
   checkRows: function(){
