@@ -61,6 +61,17 @@ model = {
       this.height = 40;
   },
 
+  square: {
+      // view.ctx.rect(0,20,40,40);
+      // view.ctx.stroke();
+      // view.ctx.rect(0,60,40,40);
+      // view.ctx.stroke();
+      // view.ctx.rect(40,20,40,40);
+      // view.ctx.stroke();
+      // view.ctx.rect(40,60,40,40);
+      // view.ctx.stroke();
+  },
+
   movePieceDown: function(){
     if (!model.collisionDetected() && !model.reachedBottom()){
       model.currentPiece.y += 1;
@@ -76,7 +87,7 @@ model = {
     model.createPiece();
   },
 
-  movePieceOnX: function(xAmt){
+  movePieceOnX: function(xAmt){  //need to add collision for left/right
     piece = model.currentPiece;
     // console.log('moving '+ piece.x+ ' ' + xAmt);
     nextX = piece.x+ xAmt;
@@ -150,27 +161,22 @@ model = {
     console.log('clearing row '+ row );
     //find and remove all row pieces in board
     var yCoord = row*40;
-    for(var i=0; i<model.board.length; i++){
+    for(var i = model.board.length -1; i >= 0; i--){
       if(model.board[i].y === yCoord){
+        console.log("printing boardI.x" + model.board[i].x/40)
+        // console.log(model.board[i].y)
         model.board.splice(i,1);
+      }else{
+        model.board[i].y += 40;
       }
     }
     //remove row
     model.rows.splice(row,1);
     //add empty row
-    model.rows.push(undefined);
-  },
-
-  square: {
-      // view.ctx.rect(0,20,40,40);
-      // view.ctx.stroke();
-      // view.ctx.rect(0,60,40,40);
-      // view.ctx.stroke();
-      // view.ctx.rect(40,20,40,40);
-      // view.ctx.stroke();
-      // view.ctx.rect(40,60,40,40);
-      // view.ctx.stroke();
+    model.rows.unshift({});
   }
+
+
 };
 
 view = {

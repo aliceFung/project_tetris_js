@@ -4,3 +4,20 @@
   left: 12%;
   top: 2em;
 }
+/*
+#SplashScreen
+{
+    
+  position: fixed;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  opacity: 0.8;
+  z-index:1001;
+}
+
+#StartButton{
+  left: 20px;
+}*/
