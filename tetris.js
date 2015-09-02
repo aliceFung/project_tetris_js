@@ -91,7 +91,8 @@ model = {
     piece = model.currentPiece;
     // console.log('moving '+ piece.x+ ' ' + xAmt);
     nextX = piece.x+ xAmt;
-    if (nextX >= 0 && nextX <= (view.canvas.width - piece.width)){
+    //checking borders
+    if (nextX >= 0 && nextX <= (view.canvas.width - piece.width) && !model.occupiedSpace(nextX)){
       piece.x += xAmt;
     }
   },
@@ -103,8 +104,11 @@ model = {
     model.bottomBlocks();
   },
 
-  collisionDetected: function(){
+  collisionDetected: function(nextX){
     var piece = model.currentPiece;
+    // if (nextX){
+    //   piece.x = nextX;
+    // }
     if (piece.x < 0 || piece.x > view.canvas.width - piece.width || piece.y > view.canvas.height - piece.height - 1){
       return  true;
     } else if (model.occupiedSpace()){
@@ -114,13 +118,17 @@ model = {
     }
   },
 
-  occupiedSpace: function(){
+  occupiedSpace: function(nextX){
     var piece = model.currentPiece;
-      for (var i = 0;i < model.board.length; i++ ){
-        if (piece.x == model.board[i].x && piece.y + piece.height >= model.board[i].y){
-          return true;
-        }
+    //if(!!nextX){ nextX = piece.x};
+    //if (model.rows[Math.floor(piece.y/40)][nextX/40])
+    //  return true;
+
+    for (var i = 0;i < model.board.length; i++ ){
+      if (piece.x == model.board[i].x && piece.y + piece.height >= model.board[i].y){
+        return true;
       }
+    }
   },
 
   reachedBottom: function(){
