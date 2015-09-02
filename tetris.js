@@ -35,6 +35,7 @@ model = {
 
   board: [],
   rows: new Array(20),
+  pieceSize: 40,
 
   init: function(){
     model.createPiece();
@@ -54,22 +55,50 @@ model = {
 
   //Constructor
   SmallPiece: function(x,y){
-
       this.x = x;
       this.y = y;
-      this.width = 40;
-      this.height = 40;
+      this.width = model.pieceSize;
+      this.height = model.pieceSize;
   },
 
-  square: {
-      // view.ctx.rect(0,20,40,40);
-      // view.ctx.stroke();
-      // view.ctx.rect(0,60,40,40);
-      // view.ctx.stroke();
-      // view.ctx.rect(40,20,40,40);
-      // view.ctx.stroke();
-      // view.ctx.rect(40,60,40,40);
-      // view.ctx.stroke();
+  //Constructor y @ -80 to be offscreen
+  Square: function(x,y){
+    this.pieces = [];
+    this.pieces[0] = new board.SmallPiece(x, y); //top left
+    this.pieces[1] = new board.SmallPiece(x, y+model.pieceSize); // top right
+    this.pieces[2] = new board.SmallPiece(x+model.pieceSize, y); // bottom left
+    this.pieces[3] = new board.SmallPiece(x+model.pieceSize, y+model.pieceSize); //bottom right
+    this.x = x;
+    this.y = y;
+    this.width = model.pieceSize * 2;
+    this.height = model.pieceSize * 2;
+  },
+
+  //Constructor y @ -160 to be offscreen
+  Bar: function(x,y){
+    this.pieces = [];
+    //straight up and down
+    this.pieces[0] = new board.SmallPiece(x, y);
+    this.pieces[1] = new board.SmallPiece(x, y+model.pieceSize);
+    this.pieces[2] = new board.SmallPiece(x, y+model.pieceSize*2);
+    this.pieces[3] = new board.SmallPiece(x, y+model.pieceSize*3);
+    this.x = x;
+    this.y = y;
+    this.width = model.pieceSize;
+    this.height = model.pieceSize*4;
+  },
+
+  //Constructor y @ -120 to be offscreen
+  L: function(x,y){
+    this.pieces = [];
+    this.pieces[0] = new board.SmallPiece(x, y); //top
+    this.pieces[1] = new board.SmallPiece(x, y+model.pieceSize);
+    this.pieces[2] = new board.SmallPiece(x, y+model.pieceSize*2);
+    this.pieces[3] = new board.SmallPiece(x+model.pieceSize, y+model.pieceSize*2);
+    this.x = x;
+    this.y = y;
+    this.width = model.pieceSize * 2;
+    this.height = model.pieceSize * 3;
   },
 
   movePieceDown: function(){
