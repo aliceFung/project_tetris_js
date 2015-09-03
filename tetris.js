@@ -6,7 +6,7 @@ controller = {
     //testing
     model.init(); // creates 1 new piece
     view.drawShape(model.currentPiece); //draws piece
-    setInterval(this.gameLoop, 10);
+    setInterval(this.gameLoop, 400);
   },
 
   gameLoop: function(){
@@ -14,7 +14,7 @@ controller = {
     view.renderBoard(model.board);
     controller.movePiece();   //moves piece down
     view.drawShape(model.currentPiece); //
-    console.log('tick');
+    // console.log('tick');
   },
 
   movePiece: function(xAmt){
@@ -51,14 +51,20 @@ model = {
     // selection = Math.floor((Math.random() * 7));
 
     // model.currentPiece = new shapes[selection](model.randomX(),0);
+
     model.currentPiece = new model.Square(model.randomX(),0);
+      // // if x is off the edge when creating big shapes
+      // if (model.currentPiece.x + model.currentPiece.width > 800){
+      //   //shift them over to the left so they aren't created off canvas
+      // }
     // new model.SmallPiece(model.randomX(),0);
     model.pieces = model.currentPiece.pieces;
   },
 
   //generates random X coordinate @ 40 increments
+  // *9 b/c shape is 2 pieces in width
   randomX: function(){
-    return Math.floor(Math.random()*10)*40;
+    return Math.floor(Math.random()*9)*40;
   },
 
   //Constructor
@@ -136,10 +142,10 @@ model = {
 
   S: function(x,y){
     this.pieces= [];
-    this.pieces[0] = new model.SmallPiece(x+model.pieceSize, y);
-    this.pieces[1] = new model.SmallPiece(x+model.pieceSize*2, y);
-    this.pieces[2] = new model.SmallPiece(x, y+model.pieceSize);
-    this.pieces[3] = new model.SmallPiece(x+model.pieceSize, y+model.pieceSize);
+    this.pieces[0] = new model.SmallPiece(x, y);
+    this.pieces[1] = new model.SmallPiece(x, y+model.pieceSize);
+    this.pieces[2] = new model.SmallPiece(x+model.pieceSize, y+model.pieceSize);
+    this.pieces[3] = new model.SmallPiece(x+model.pieceSize, y+model.pieceSize*2);
     this.x = x;
     this.y = y;
     this.width = model.pieceSize * 3;
@@ -148,10 +154,10 @@ model = {
 
   Z: function(x,y){
     this.pieces= [];
-    this.pieces[0] = new model.SmallPiece(x, y);
-    this.pieces[1] = new model.SmallPiece(x, y+model.pieceSize);
-    this.pieces[2] = new model.SmallPiece(x+model.pieceSize, y+model.pieceSize);
-    this.pieces[3] = new model.SmallPiece(x+model.pieceSize*2, y+model.pieceSize);
+    this.pieces[0] = new model.SmallPiece(x+model.pieceSize, y);
+    this.pieces[1] = new model.SmallPiece(x+model.pieceSize, y+model.pieceSize);
+    this.pieces[2] = new model.SmallPiece(x, y+model.pieceSize);
+    this.pieces[3] = new model.SmallPiece(x, y+model.pieceSize*2);
     this.x = x;
     this.y = y;
     this.width = model.pieceSize * 3;
@@ -159,26 +165,28 @@ model = {
   },
 
   updateShapeCoord: function(xAmt, yAmt){
-    console.log('update shape coord');
+    // console.log('update shape coord');
     xAmt = xAmt || 0;
     yAmt = yAmt || 0;
     for(var i=0; i< model.pieces.length; i++){
-      console.log('actually updating piece ' + i);
+      // console.log('actually updating piece ' + i);
       model.pieces[i].x += xAmt;
       model.pieces[i].y += yAmt;
     }
     model.currentPiece.x +=xAmt;
     model.currentPiece.y +=yAmt;
-    console.log('actually updating shape ');
+    // console.log('actually updating shape ');
   },
 
   movePieceDown: function(){
     console.log('move piece down');
     if (!model.collisionDetected() && !model.reachedBottom()){
-      model.updateShapeCoord(0, 1);
+      model.updateShapeCoord(0, 40);
       // model.currentPiece.y += 1;
-    }else if (model.reachedBottom() || model.occupiedSpace()){
+    }else if (model.occupiedSpace()){
       model.bottomBlocks();
+    }else{
+      console.log('something is happening here'); //remove after fix
     }
   },
 
@@ -192,7 +200,7 @@ model = {
     model.createPiece();
   },
 
-  movePieceOnX: function(xAmt){  //need to add collision for left/right
+  movePieceOnX: function(xAmt){
     console.log('move piece on x');
     var pieces = model.currentPiece.pieces;
     var okPieces = 0;
@@ -202,7 +210,7 @@ model = {
       // console.log('moving '+ piece.x+ ' ' + xAmt);
       nextX = piece.x+ xAmt;
       //checking borders
-      if (nextX >= 0 && nextX <= (view.canvas.width - piece.width) && !model.occupiedSpace()){
+      if (nextX >= 0 && nextX <= (view.canvas.width - piece.width) && !model.occupiedSpace(nextX)){
         okPieces ++;
         // piece.x += xAmt;
       }
@@ -220,7 +228,7 @@ model = {
     model.bottomBlocks();
   },
 
-  collisionDetected: function(nextX){
+  collisionDetected: function(){
     var pieces = model.currentPiece.pieces;
     var count = 0;
     var collided = false;
@@ -231,8 +239,6 @@ model = {
         collided = true;
       } else if (model.occupiedSpace()){
         collided = true;
-      } else{
-        collided = false;
       }
       count ++;
     }
@@ -244,15 +250,17 @@ model = {
     var rowToCheck;
     var occupied = false;
     var count = 0;
+    //looping through small pieces
     while(!occupied && count < pieces.length){
       var piece = pieces[count];
       // setting default
       if(!nextX){nextX = piece.x;}
 
-      if(Math.floor(piece.y/40+1) < 0){
+      rowToCheck = Math.floor(piece.y/40+1); // y=721; ck row: 19
+      if(rowToCheck < 0 || rowToCheck > 19){
         occupied = true;
       }
-      else if (model.rows[Math.floor(piece.y/40)][nextX/40]){
+      else if (model.rows[rowToCheck][nextX/40]){
        occupied = true;
       }
       count++;
@@ -267,7 +275,7 @@ model = {
 
   // sets cell status to occupied or not
   addToRow: function(piece){
-    console.log('addToRow');
+    // console.log('addToRow');
     // for(var i=0; i < model.pieces.length; i++){
     //   piece = model.pieces[i];
       var index = piece.x/40;
@@ -277,7 +285,7 @@ model = {
   },
 
   checkRows: function(){
-    console.log('running checkRows');
+    // console.log('running checkRows');
     var count;
     //go through all rows from bottom up
     for (var y = 19; y >= 0; y--){
@@ -290,7 +298,7 @@ model = {
             count++;
           }
         }
-        console.log('checking row ' + x + "count "+ count);
+        // console.log('checking row ' + x + "count "+ count);
         //if all cells filled
         if (count === 10){
           model.clearRow(y);
@@ -300,12 +308,12 @@ model = {
   },
 
   clearRow: function(row){
-    console.log('clearing row '+ row );
+    // console.log('clearing row '+ row );
     //find and remove all row pieces in board
     var yCoord = row*40;
     for(var i = model.board.length -1; i >= 0; i--){
       if(model.board[i].y === yCoord){
-        console.log("printing boardI.x" + model.board[i].x/40)
+        // console.log("printing boardI.x" + model.board[i].x/40)
         // console.log(model.board[i].y)
         model.board.splice(i,1);
       }else{
