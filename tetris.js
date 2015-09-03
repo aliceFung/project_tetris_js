@@ -288,8 +288,8 @@ model = {
   checkRows: function(){
     // console.log('running checkRows');
     var count;
-    //go through all rows from bottom up
-    for (var y = 19; y >= 0; y--){
+    //go through all rows from top down
+    for(var y = 0; y <= 19; y++){
       count = 0;
       // if row exists
       if(model.rows[y]){
