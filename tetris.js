@@ -185,7 +185,7 @@ model = {
   },
 
   movePieceDown: function(){
-    console.log('move piece down');
+    // console.log('move piece down');
     if (!model.collisionDetected() && !model.reachedBottom()){
       model.updateShapeCoord(0, 10);
       // model.currentPiece.y += 1;
@@ -207,7 +207,7 @@ model = {
   },
 
   movePieceOnX: function(xAmt){
-    console.log('move piece on x');
+    // console.log('move piece on x');
     var pieces = model.currentPiece.pieces;
     var okPieces = 0;
     //check every piece of shape if valid to move
@@ -318,16 +318,20 @@ model = {
     // console.log('clearing row '+ row );
     //find and remove all row pieces in board
     var yCoord = row*40;
+    var count =0; // for checking, remove later
     for(var i = model.board.length -1; i >= 0; i--){
       if(model.board[i].y === yCoord){
-        // console.log("printing boardI.x" + model.board[i].x/40)
+        console.log("printing board[i].x" + model.board[i].x/40);
         // console.log(model.board[i].y)
         model.board.splice(i,1);
-      }else{
+        count++;
+      }else if (model.board[i].y < yCoord){
         model.board[i].y += 40;
       }
     }
+    console.log('removed '+ count +'cells');
     //remove row
+    console.log('removing row ' + row);
     model.rows.splice(row,1);
     //add empty row
     model.rows.unshift({});
@@ -355,6 +359,9 @@ view = {
   },
 
   drawPiece: function(piece){
+    view.ctx.fillStyle = '#6C0';
+    view.ctx.fillRect(piece.x, piece.y, piece.width, piece.height);
+    view.ctx.strokeStyle = "black";
     view.ctx.strokeRect(piece.x, piece.y, piece.width, piece.height);
   },
 
@@ -362,7 +369,7 @@ view = {
     var pieces = shape.pieces;
     for (var i = pieces.length - 1; i >= 0; i--) {
           view.drawPiece(pieces[i]);
-    };
+    }
   },
 
   changePieceColumn: function(event){
