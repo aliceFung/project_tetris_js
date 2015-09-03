@@ -161,12 +161,14 @@ model = {
     console.log('update shape coord');
     xAmt = xAmt || 0;
     yAmt = yAmt || 0;
-    for(var i=0; i< model.pieces; i++){
+    for(var i=0; i< model.pieces.length; i++){
+      console.log('actually updating piece ' + i);
       model.pieces[i].x += xAmt;
       model.pieces[i].y += yAmt;
     }
     model.currentPiece.x +=xAmt;
     model.currentPiece.y +=yAmt;
+    console.log('actually updating shape ');
   },
 
   movePieceDown: function(){
@@ -181,7 +183,7 @@ model = {
 
   //stop movement because can't move down anymore, piece is finished
   bottomBlocks: function(){
-    for(var i=0; i< model.pieces; i++){
+    for(var i=0; i< model.pieces.length; i++){
       model.board.push(pieces[i]);
       model.addToRow(pieces[i]);
     }
@@ -206,7 +208,7 @@ model = {
     }
     //ok to change x coord
     if(okPieces === pieces.length){
-      model.updateShapeCoord(xAmt);
+      model.updateShapeCoord(xAmt, 0);
     }
   },
 
@@ -246,7 +248,10 @@ model = {
       // setting default
       if(!nextX){nextX = piece.x;}
 
-      if (model.rows[Math.floor(piece.y/40+1)][nextX/40]){
+      if(Math.floor(piece.y/40+1) < 0){
+        occupied = true;
+      }
+      else if (model.rows[Math.floor(piece.y/40+1)][nextX/40]){
        occupied = true;
       }
       count++;
