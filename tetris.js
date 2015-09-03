@@ -184,7 +184,7 @@ model = {
 
   //stop movement because can't move down anymore, piece is finished
   bottomBlocks: function(){
-    for(var i=0; i< model.pieces.length; i++){
+    for(var i= model.pieces.length-1; i >= 0; i--){
       model.board.push(model.pieces[i]);
       model.addToRow(model.pieces[i]);
     }
