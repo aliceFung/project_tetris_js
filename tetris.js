@@ -3,7 +3,6 @@ controller = {
   init: function(){
     //initialize the view
     view.init();
-    //testing
     model.init(); // creates 1 new piece
     view.drawShape(model.currentPiece); //draws piece
     controller.startGame();
@@ -27,10 +26,16 @@ controller = {
   },
 
   movePiece: function(xAmt){
+    var validMove = true;
     if (xAmt){
       model.movePieceOnX(xAmt);
     } else {
-    model.movePieceDown();
+      validMove = model.movePieceDown();
+    }
+
+    if (!validMove){
+      view.drawShape(model.currentPiece);
+      controller.endGame();
     }
   },
 

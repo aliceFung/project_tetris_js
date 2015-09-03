@@ -176,12 +176,21 @@ model = {
   },
 
   movePieceDown: function(){
-    if (!model.collisionDetected() && !model.reachedBottom()){
+    if(!model.collisionDetected() && !model.reachedBottom()){
       model.updateShapeCoord(0, 10);
-    }else if (model.occupiedSpace()){
+    }else if (!model.pieceCannotMove() && model.occupiedSpace()){
       model.bottomBlocks();
     }else{
+      return false;
       console.log('something is happening here'); //remove after fix
+    }
+    return true;
+  },
+
+  pieceCannotMove: function(){
+    //top edge of shape in on canvas
+    if (model.currentPiece.y < 0){
+      return true; //tmp
     }
   },
 
