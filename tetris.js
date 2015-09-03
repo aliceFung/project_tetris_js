@@ -6,7 +6,7 @@ controller = {
     //testing
     model.init(); // creates 1 new piece
     view.drawShape(model.currentPiece); //draws piece
-    setInterval(this.gameLoop, 400);
+    setInterval(this.gameLoop, 100);
   },
 
   gameLoop: function(){
@@ -148,8 +148,8 @@ model = {
     this.pieces[3] = new model.SmallPiece(x+model.pieceSize, y+model.pieceSize*2);
     this.x = x;
     this.y = y;
-    this.width = model.pieceSize * 3;
-    this.height = model.pieceSize * 2;
+    this.width = model.pieceSize * 2;
+    this.height = model.pieceSize * 3;
   },
 
   Z: function(x,y){
@@ -160,8 +160,8 @@ model = {
     this.pieces[3] = new model.SmallPiece(x, y+model.pieceSize*2);
     this.x = x;
     this.y = y;
-    this.width = model.pieceSize * 3;
-    this.height = model.pieceSize * 2;
+    this.width = model.pieceSize * 2;
+    this.height = model.pieceSize * 3;
   },
 
   updateShapeCoord: function(xAmt, yAmt){
@@ -181,7 +181,7 @@ model = {
   movePieceDown: function(){
     console.log('move piece down');
     if (!model.collisionDetected() && !model.reachedBottom()){
-      model.updateShapeCoord(0, 40);
+      model.updateShapeCoord(0, 10);
       // model.currentPiece.y += 1;
     }else if (model.occupiedSpace()){
       model.bottomBlocks();
@@ -210,7 +210,7 @@ model = {
       // console.log('moving '+ piece.x+ ' ' + xAmt);
       nextX = piece.x+ xAmt;
       //checking borders
-      if (nextX >= 0 && nextX <= (view.canvas.width - piece.width) && !model.occupiedSpace(nextX)){
+      if (nextX >= 0 && nextX <= (view.canvas.width - piece.width) && !model.occupiedSpace(xAmt)){
         okPieces ++;
         // piece.x += xAmt;
       }
