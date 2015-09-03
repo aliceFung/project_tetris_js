@@ -205,7 +205,7 @@ model = {
     var pieces = model.currentPiece.pieces;
     var okPieces = 0;
     //check every piece of shape if valid to move
-    for(var i=0; i< pieces; i++){
+    for(var i=0; i< pieces.length; i++){
       var piece = pieces[i];
       // console.log('moving '+ piece.x+ ' ' + xAmt);
       nextX = piece.x+ xAmt;
@@ -245,17 +245,18 @@ model = {
     return collided;
   },
 
-  occupiedSpace: function(nextX){
+  occupiedSpace: function(xAmt){
     var pieces = model.currentPiece.pieces;
     var rowToCheck;
     var occupied = false;
     var count = 0;
+    // setting default
+    xAmt = xAmt || 0;
+
     //looping through small pieces
     while(!occupied && count < pieces.length){
       var piece = pieces[count];
-      // setting default
-      if(!nextX){nextX = piece.x;}
-
+      var nextX = xAmt + piece.x;
       rowToCheck = Math.floor(piece.y/40+1); // y=721; ck row: 19
       if(rowToCheck < 0 || rowToCheck > 19){
         occupied = true;
