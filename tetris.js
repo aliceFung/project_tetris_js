@@ -27,6 +27,10 @@ controller = {
 
   dropPiece: function(){
     model.dropPiece();
+  },
+
+  rotatePiece: function(){
+    model.rotatePiece();
   }
 
 };
@@ -53,10 +57,7 @@ model = {
     model.currentPiece = new shapes[selection](model.randomX(),0);
 
     // model.currentPiece = new model.Square(model.randomX(),0);
-      // if (model.currentPiece.x + model.currentPiece.width > 800){
-      //   //shift them over to the left so they aren't created off canvas
-      // }
-    // new model.SmallPiece(model.randomX(),0);
+
     model.pieces = model.currentPiece.pieces;
   },
 
@@ -184,6 +185,30 @@ model = {
     // console.log('actually updating shape ');
   },
 
+  rotatePiece: function(){
+    var tempPieces = [];
+    var originX = model.currentPiece.x;
+    var originY = model.currentPiece.y;
+    for (var i=0; i < model.pieces.length; i++){
+      //subtract origin x and y for rotation point of shape
+      //swap x and y for clockwise rotation
+      //add origin x and y to maintain place on board
+      var tmp = { x: model.pieces[i].y - originY + originX,
+                  y: model.pieces[i].x - originX + originY};
+      //create tmp piece to check collision
+      tempPieces.push(tmp);
+    }
+    if(!model.occupiedSpace(0, tempPieces)){
+      for (var i=0; i < model.pieces.length; i++){
+        model.pieces[i].x = tempPieces[i].x;
+        model.pieces[i].y = tempPieces[i].y;
+     }
+     var tmpW = model.currentPiece.width;
+     model.currentPiece.width = model.currentPiece.height;
+     model.currentPiece.height = tmpW;
+    }
+  },
+
   movePieceDown: function(){
     // console.log('move piece down');
     if (!model.collisionDetected() && !model.reachedBottom()){
@@ -251,8 +276,8 @@ model = {
     return collided;
   },
 
-  occupiedSpace: function(xAmt){
-    var pieces = model.currentPiece.pieces;
+  occupiedSpace: function(xAmt, pieces){
+    pieces = pieces || model.currentPiece.pieces;
     var rowToCheck;
     var occupied = false;
     var count = 0;
@@ -264,7 +289,7 @@ model = {
       var piece = pieces[count];
       var nextX = xAmt + piece.x;
       rowToCheck = Math.floor(piece.y/40+1); // y=721; ck row: 19
-      if(rowToCheck < 0 || rowToCheck > 19){
+      if(rowToCheck < 0 || rowToCheck > 19 || nextX <0 || nextX >=400){
         occupied = true;
       }
       else if (model.rows[rowToCheck][nextX/40]){
@@ -376,6 +401,8 @@ view = {
     if (event.which == 37 || event.which == 39){
       var xSpace = view.userMove[event.which] * 40;
       controller.movePiece(xSpace);
+    } else if (event.which == 38){
+      controller.rotatePiece();
     }
 
     if (event.which == 40){
@@ -391,7 +418,7 @@ view = {
 
   userMove: {
     37: -1, //left
-    // 38: 'up',
+    38: 'rotate', // 'up',
     39: 1, //'right'
     40: 'down'
   }
