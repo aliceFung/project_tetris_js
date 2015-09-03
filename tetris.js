@@ -47,10 +47,11 @@ model = {
 
   createPiece: function(){
     console.log('piece created');
-    var shapes = [model.Square,model.I, model.J, model.T, model.Z, model.S, model.L];
-    selection = Math.floor((Math.random() * 7));
+    // var shapes = [model.Square,model.I, model.J, model.T, model.Z, model.S, model.L];
+    // selection = Math.floor((Math.random() * 7));
 
-    model.currentPiece = new shapes[selection](model.randomX(),0);
+    // model.currentPiece = new shapes[selection](model.randomX(),0);
+    model.currentPiece = new model.Square(model.randomX(),0);
     // new model.SmallPiece(model.randomX(),0);
     model.pieces = model.currentPiece.pieces;
   },
@@ -184,8 +185,8 @@ model = {
   //stop movement because can't move down anymore, piece is finished
   bottomBlocks: function(){
     for(var i=0; i< model.pieces.length; i++){
-      model.board.push(pieces[i]);
-      model.addToRow(pieces[i]);
+      model.board.push(model.pieces[i]);
+      model.addToRow(model.pieces[i]);
     }
     model.checkRows();
     model.createPiece();
@@ -251,7 +252,7 @@ model = {
       if(Math.floor(piece.y/40+1) < 0){
         occupied = true;
       }
-      else if (model.rows[Math.floor(piece.y/40+1)][nextX/40]){
+      else if (model.rows[Math.floor(piece.y/40)][nextX/40]){
        occupied = true;
       }
       count++;
