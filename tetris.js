@@ -47,13 +47,12 @@ model = {
 
   createPiece: function(){
     console.log('piece created');
-    // var shapes = [model.Square,model.I, model.J, model.T, model.Z, model.S, model.L];
-    // selection = Math.floor((Math.random() * 7));
+    var shapes = [model.Square,model.I, model.J, model.T, model.Z, model.S, model.L];
+    selection = Math.floor((Math.random() * 6.999999)); //no 7 idx
 
-    // model.currentPiece = new shapes[selection](model.randomX(),0);
+    model.currentPiece = new shapes[selection](model.randomX(),0);
 
-    model.currentPiece = new model.Square(model.randomX(),0);
-      // // if x is off the edge when creating big shapes
+    // model.currentPiece = new model.Square(model.randomX(),0);
       // if (model.currentPiece.x + model.currentPiece.width > 800){
       //   //shift them over to the left so they aren't created off canvas
       // }
@@ -86,6 +85,7 @@ model = {
     this.y = y;
     this.width = model.pieceSize * 2;
     this.height = model.pieceSize * 2;
+    this.type = 'square';
   },
 
 
@@ -101,6 +101,7 @@ model = {
     this.y = y;
     this.width = model.pieceSize;
     this.height = model.pieceSize*4;
+    this.type = 'I';
   },
 
   //Constructor y @ -120 to be offscreen
@@ -114,6 +115,7 @@ model = {
     this.y = y;
     this.width = model.pieceSize * 2;
     this.height = model.pieceSize * 3;
+    this.type = 'L';
   },
 
   J: function(x,y){
@@ -121,11 +123,12 @@ model = {
     this.pieces[0] = new model.SmallPiece(x+model.pieceSize, y); //top
     this.pieces[1] = new model.SmallPiece(x+model.pieceSize, y+model.pieceSize);
     this.pieces[2] = new model.SmallPiece(x+model.pieceSize, y+model.pieceSize*2);
-    this.pieces[3] = new model.SmallPiece(x, y-model.pieceSize*2);
+    this.pieces[3] = new model.SmallPiece(x, y+model.pieceSize*2);
     this.x = x;
     this.y = y;
     this.width = model.pieceSize * 2;
     this.height = model.pieceSize * 3;
+    this.type = 'J';
   },
 
   T: function(x,y){
@@ -138,6 +141,7 @@ model = {
     this.y = y;
     this.width = model.pieceSize * 2;
     this.height = model.pieceSize * 3;
+    this.type = 'T';
   },
 
   S: function(x,y){
@@ -150,6 +154,7 @@ model = {
     this.y = y;
     this.width = model.pieceSize * 2;
     this.height = model.pieceSize * 3;
+    this.type = 'S';
   },
 
   Z: function(x,y){
@@ -162,6 +167,7 @@ model = {
     this.y = y;
     this.width = model.pieceSize * 2;
     this.height = model.pieceSize * 3;
+    this.type = 'Z';
   },
 
   updateShapeCoord: function(xAmt, yAmt){
