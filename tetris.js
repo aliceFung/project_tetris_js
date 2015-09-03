@@ -193,8 +193,9 @@ model = {
       //subtract origin x and y for rotation point of shape
       //swap x and y for clockwise rotation
       //add origin x and y to maintain place on board
+      var tmpY = model.pieces[i].x - originX; //coord set to origin
       var tmp = { x: model.pieces[i].y - originY + originX,
-                  y: model.pieces[i].x - originX + originY};
+                  y: model.pieceSize*3 - tmpY + originY};
       //create tmp piece to check collision
       tempPieces.push(tmp);
     }
