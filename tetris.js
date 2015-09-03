@@ -6,7 +6,16 @@ controller = {
     //testing
     model.init(); // creates 1 new piece
     view.drawShape(model.currentPiece); //draws piece
-    setInterval(this.gameLoop, 100);
+    controller.startGame();
+  },
+
+  startGame: function(){
+    controller.gameplay = setInterval(this.gameLoop, 100);
+  },
+
+  endGame: function(){
+    clearInterval(controller.gameplay);
+    alert("You Lost!");
   },
 
   gameLoop: function(){
@@ -40,6 +49,7 @@ model = {
   board: [],
   rows: new Array(20),
   pieceSize: 40,
+  currentColor: '#6C0',
   // pieces: model.currentPiece.pieces,
 
   init: function(){
@@ -51,15 +61,20 @@ model = {
 
   createPiece: function(){
     console.log('piece created');
-    var shapes = [model.Square,model.I, model.J, model.T, model.Z, model.S, model.L];
+    var shapes = [ [model.Square, -80], [model.I, -160],
+                [model.J, -120], [model.T, -120], [model.Z, -120],
+                [model.S, -120], [model.L, -120] ];
     selection = Math.floor((Math.random() * 6.999999)); //no 7 idx
 
-    model.currentPiece = new shapes[selection](model.randomX(),0);
+    model.currentColor = model.colors[selection];
+    model.currentPiece = new shapes[selection][0](model.randomX(),shapes[selection][1]);
 
     // model.currentPiece = new model.Square(model.randomX(),0);
 
     model.pieces = model.currentPiece.pieces;
   },
+
+  colors: ['blue', 'tomato', 'yellow','#6C0', 'orange', '#00FFFF', 'pink'],
 
   //generates random X coordinate @ 40 increments
   // *9 b/c shape is 2 pieces in width
@@ -73,6 +88,7 @@ model = {
       this.y = y;
       this.width = model.pieceSize;
       this.height = model.pieceSize;
+      this.color = model.currentColor;
   },
 
   //Constructor y @ -80 to be offscreen
@@ -290,7 +306,9 @@ model = {
       var piece = pieces[count];
       var nextX = xAmt + piece.x;
       rowToCheck = Math.floor(piece.y/40+1); // y=721; ck row: 19
-      if(rowToCheck < 0 || rowToCheck > 19 || nextX <0 || nextX >=400){
+      if (rowToCheck< 0){
+        //stuff
+      }else if(rowToCheck > 19 || nextX <0 || nextX >=400){
         occupied = true;
       }
       else if (model.rows[rowToCheck][nextX/40]){
@@ -385,7 +403,7 @@ view = {
   },
 
   drawPiece: function(piece){
-    view.ctx.fillStyle = '#6C0';
+    view.ctx.fillStyle = piece.color;
     view.ctx.fillRect(piece.x, piece.y, piece.width, piece.height);
     view.ctx.strokeStyle = "black";
     view.ctx.strokeRect(piece.x, piece.y, piece.width, piece.height);
