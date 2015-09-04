@@ -19,7 +19,7 @@ controller = {
   },
 
   setSpeed: function(){
-    controller.loopInterval = 350 - (model.level+model.score)*20;
+    controller.loopInterval = 350 - (model.level+model.score)*10;
   },
 
   runGame: function(){

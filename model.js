@@ -14,13 +14,12 @@ model = {
   },
 
   createPiece: function(){
-    var shapes = [ [model.Square, -80], [model.I, -160],
-                [model.J, -120], [model.T, -120], [model.Z, -120],
-                [model.S, -120], [model.L, -120] ];
+    var shapes = [  model.Square, model.I, model.J, model.T,
+                    model.Z, model.S, model.L ];
     selection = Math.floor((Math.random() * 6.999999)); //no 7 idx
 
     model.currentColor = model.colors[selection];
-    model.currentPiece = new shapes[selection][0](model.randomX(),shapes[selection][1]);
+    model.currentPiece = new shapes[selection](model.randomX());
 
     model.pieces = model.currentPiece.pieces;
   },
@@ -35,107 +34,123 @@ model = {
 
   //Constructor
   SmallPiece: function(x,y){
-      this.x = x;
-      this.y = y;
       this.width = model.pieceSize;
       this.height = model.pieceSize;
       this.color = model.currentColor;
+      this.x = x;
+      this.y = y;
   },
 
   //Constructor y @ -80 to be offscreen
-  Square: function(x,y){
-    this.pieces = [];
-    this.pieces[0] = new model.SmallPiece(x, y); //top left
-    this.pieces[1] = new model.SmallPiece(x, y+model.pieceSize); // top right
-    this.pieces[2] = new model.SmallPiece(x+model.pieceSize, y); // bottom left
-    this.pieces[3] = new model.SmallPiece(x+model.pieceSize, y+model.pieceSize); //bottom right
-    this.x = x;
-    this.y = y;
+  Square: function(x){
+    this.type = 'square';
     this.width = model.pieceSize * 2;
     this.height = model.pieceSize * 2;
-    this.type = 'square';
+    this.x = x;
+    this.y = 0 - this.height;
+
+    this.pieces = [];
+    this.pieces[0] = new model.SmallPiece(x, this.y ) ; //top left
+    this.pieces[1] = new model.SmallPiece(x, this.y + model.pieceSize); // top right
+    this.pieces[2] = new model.SmallPiece(x + model.pieceSize, this.y ) ; // bottom left
+    this.pieces[3] = new model.SmallPiece(x + model.pieceSize, this.y + model.pieceSize); //bottom right
   },
 
 
   //Constructor y @ -160 to be offscreen
   I: function(x,y){
+    this.type = 'I';
+    this.width = model.pieceSize;
+    this.height = model.pieceSize * 4;
+    this.x = x;
+    this.y = 0 - this.height;
+
     this.pieces = [];
     //straight up and down
-    this.pieces[0] = new model.SmallPiece(x, y);
-    this.pieces[1] = new model.SmallPiece(x, y+model.pieceSize);
-    this.pieces[2] = new model.SmallPiece(x, y+model.pieceSize*2);
-    this.pieces[3] = new model.SmallPiece(x, y+model.pieceSize*3);
-    this.x = x;
-    this.y = y;
-    this.width = model.pieceSize;
-    this.height = model.pieceSize*4;
-    this.type = 'I';
+    this.pieces[0] = new model.SmallPiece(x, this.y ) ;
+    this.pieces[1] = new model.SmallPiece(x, this.y + model.pieceSize);
+    this.pieces[2] = new model.SmallPiece(x, this.y + model.pieceSize* 2);
+    this.pieces[3] = new model.SmallPiece(x, this.y + model.pieceSize* 3);
   },
 
   //Constructor y @ -120 to be offscreen
   L: function(x,y){
-    this.pieces = [];
-    this.pieces[0] = new model.SmallPiece(x, y); //top
-    this.pieces[1] = new model.SmallPiece(x, y+model.pieceSize);
-    this.pieces[2] = new model.SmallPiece(x, y+model.pieceSize*2);
-    this.pieces[3] = new model.SmallPiece(x+model.pieceSize, y+model.pieceSize*2);
-    this.x = x;
-    this.y = y;
+    this.type = 'L';
     this.width = model.pieceSize * 2;
     this.height = model.pieceSize * 3;
-    this.type = 'L';
+    this.x = x;
+    this.y = 0 - this.height;
+
+    this.pieces = [];
+    this.pieces[0] = new model.SmallPiece(x, this.y); //top
+    this.pieces[1] = new model.SmallPiece(x, this.y + model.pieceSize);
+    this.pieces[2] = new model.SmallPiece(x, this.y + model.pieceSize*2);
+    this.pieces[3] = new model.SmallPiece(x + model.pieceSize,
+                                          this.y+ model.pieceSize*2);
   },
 
   J: function(x,y){
-    this.pieces = [];
-    this.pieces[0] = new model.SmallPiece(x+model.pieceSize, y); //top
-    this.pieces[1] = new model.SmallPiece(x+model.pieceSize, y+model.pieceSize);
-    this.pieces[2] = new model.SmallPiece(x+model.pieceSize, y+model.pieceSize*2);
-    this.pieces[3] = new model.SmallPiece(x, y+model.pieceSize*2);
-    this.x = x;
-    this.y = y;
+    this.type = 'J';
     this.width = model.pieceSize * 2;
     this.height = model.pieceSize * 3;
-    this.type = 'J';
+    this.x = x;
+    this.y = 0 - this.height;
+
+    this.pieces = [];
+    this.pieces[0] = new model.SmallPiece(x + model.pieceSize,
+                                          this.y); //top
+    this.pieces[1] = new model.SmallPiece(x + model.pieceSize,
+                                          this.y + model.pieceSize);
+    this.pieces[2] = new model.SmallPiece(x + model.pieceSize,
+                                          this.y + model.pieceSize * 2);
+    this.pieces[3] = new model.SmallPiece(x, this.y + model.pieceSize * 2);
   },
 
   T: function(x,y){
-    this.pieces= [];
-    this.pieces[0] = new model.SmallPiece(x, y); //top
-    this.pieces[1] = new model.SmallPiece(x, y+model.pieceSize);
-    this.pieces[2] = new model.SmallPiece(x, y+model.pieceSize*2);
-    this.pieces[3] = new model.SmallPiece(x+model.pieceSize, y+model.pieceSize);
-    this.x = x;
-    this.y = y;
+    this.type = 'T';
     this.width = model.pieceSize * 2;
     this.height = model.pieceSize * 3;
-    this.type = 'T';
+    this.x = x;
+    this.y = 0 - this.height;
+
+    this.pieces= [];
+    this.pieces[0] = new model.SmallPiece(x, this.y); //top
+    this.pieces[1] = new model.SmallPiece(x, this.y + model.pieceSize);
+    this.pieces[2] = new model.SmallPiece(x, this.y + model.pieceSize*2);
+    this.pieces[3] = new model.SmallPiece(x + model.pieceSize,
+                                          y + model.pieceSize);
   },
 
   S: function(x,y){
-    this.pieces= [];
-    this.pieces[0] = new model.SmallPiece(x, y);
-    this.pieces[1] = new model.SmallPiece(x, y+model.pieceSize);
-    this.pieces[2] = new model.SmallPiece(x+model.pieceSize, y+model.pieceSize);
-    this.pieces[3] = new model.SmallPiece(x+model.pieceSize, y+model.pieceSize*2);
-    this.x = x;
-    this.y = y;
+    this.type = 'S';
     this.width = model.pieceSize * 2;
     this.height = model.pieceSize * 3;
-    this.type = 'S';
+    this.x = x;
+    this.y = 0 - this.height;
+
+    this.pieces= [];
+    this.pieces[0] = new model.SmallPiece(x, this.y);
+    this.pieces[1] = new model.SmallPiece(x, this.y + model.pieceSize);
+    this.pieces[2] = new model.SmallPiece(x + model.pieceSize,
+                                          this.y + model.pieceSize);
+    this.pieces[3] = new model.SmallPiece(x + model.pieceSize,
+                                          this.y+model.pieceSize*2);
   },
 
   Z: function(x,y){
-    this.pieces= [];
-    this.pieces[0] = new model.SmallPiece(x+model.pieceSize, y);
-    this.pieces[1] = new model.SmallPiece(x+model.pieceSize, y+model.pieceSize);
-    this.pieces[2] = new model.SmallPiece(x, y+model.pieceSize);
-    this.pieces[3] = new model.SmallPiece(x, y+model.pieceSize*2);
-    this.x = x;
-    this.y = y;
+    this.type = 'Z';
     this.width = model.pieceSize * 2;
     this.height = model.pieceSize * 3;
-    this.type = 'Z';
+    this.x = x;
+    this.y = 0 - this.height;
+
+    this.pieces= [];
+    this.pieces[0] = new model.SmallPiece(x + model.pieceSize,
+                                          this.y);
+    this.pieces[1] = new model.SmallPiece(x + model.pieceSize,
+                                          this.y + model.pieceSize);
+    this.pieces[2] = new model.SmallPiece(x, this.y + model.pieceSize);
+    this.pieces[3] = new model.SmallPiece(x, this.y + model.pieceSize*2);
   },
 
   updateShapeCoord: function(xAmt, yAmt){
