@@ -4,6 +4,7 @@ model = {
   rows: new Array(20),
   pieceSize: 40,
   currentColor: '#6C0',
+  score: 0,
 
   init: function(){
     model.createPiece();
@@ -212,7 +213,8 @@ model = {
       var piece = pieces[i];
       nextX = piece.x+ xAmt;
       //checking borders
-      if (nextX >= 0 && nextX <= (view.canvas.width - piece.width) && !model.occupiedSpace(xAmt)){
+      // if (nextX >= 0 && nextX <= (view.canvas.width - piece.width) && !model.occupiedSpace(xAmt)){
+      if (!model.collisionDetected(xAmt)){
         okPieces ++;
       }
     }
@@ -229,15 +231,15 @@ model = {
     model.bottomBlocks();
   },
 
-  collisionDetected: function(){
+  collisionDetected: function(xAmt){
     var pieces = model.currentPiece.pieces;
     var count = 0;
     var collided = false;
     while(!collided && count < pieces.length){
       var piece = pieces[count];
-      if (piece.x < 0 || piece.x > view.canvas.width - piece.width || piece.y > view.canvas.height - piece.height - 1){
+      if (piece.x < 0 || piece.x > view.canvas.width - piece.width){
         collided = true;
-      } else if (model.occupiedSpace()){
+      } else if (model.occupiedSpace(xAmt)){
         collided = true;
       }
       count ++;
@@ -246,12 +248,13 @@ model = {
   },
 
   occupiedSpace: function(xAmt, pieces){
-    pieces = pieces || model.currentPiece.pieces;
     var rowToCheck;
     var occupied = false;
     var count = 0;
+
     // setting default
     xAmt = xAmt || 0;
+    pieces = pieces || model.currentPiece.pieces;
 
     //looping through small pieces
     while(!occupied && count < pieces.length){
@@ -317,6 +320,7 @@ model = {
 
     //add empty row
     model.rows.unshift({});
+    model.score+=1;
   }
 
 };

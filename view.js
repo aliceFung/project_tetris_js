@@ -43,10 +43,11 @@ view = {
     }
   },
 
-  renderBoard: function(board){
+  renderBoard: function(board, score){
     for (var i =  board.length - 1; i >= 0; i--) {
         view.drawPiece(board[i]);
     }
+    $('#score').text('Current Score: ' + score);
   },
 
   userMove: {
