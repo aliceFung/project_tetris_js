@@ -1,7 +1,7 @@
 # project_tetris_js
 block based gaming
 
-[Play Tetris Here](https://github.com/aliceFung/project_tetris_js.git)
+[Play Tetris Here](https://rawgit.com/aliceFung/project_tetris_js/master/tetris.html)
 
 How to Play:
 -Select a Level
