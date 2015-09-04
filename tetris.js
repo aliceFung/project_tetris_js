@@ -3,13 +3,11 @@ controller = {
   loopInterval: 350,
 
   init: function(){
-    //initialize the view
-    model.level = this.selectLevel();
-    controller.setSpeed(model.level);
-    view.init();
     model.init(); // creates 1 new piece
-    // view.drawShape(model.currentPiece); //draws piece
-    controller.startGame();
+    model.level = this.selectLevel();
+    // controller.setSpeed(model.level);
+    view.init();
+    controller.runGame();
   },
 
   selectLevel: function(){
@@ -20,20 +18,22 @@ controller = {
     return input;
   },
 
-  setSpeed: function(level){
-    controller.loopInterval -= (level-1)*100;
+  setSpeed: function(){
+    controller.loopInterval = 350 - (model.level+model.score)*20;
   },
 
-  startGame: function(){
-    controller.gameplay = setInterval(this.gameLoop, controller.loopInterval);
+  runGame: function(){
+    controller.setSpeed();
+    window.gameplay = setTimeout(this.gameLoop, controller.loopInterval);
   },
 
   endGame: function(){
-    clearInterval(controller.gameplay);
+    window.clearTimeout(window.gameplay);
     alert("You Lost!");
   },
 
   gameLoop: function(){
+    controller.runGame();
     view.clearBoard();        //clearBoard
     view.renderBoard(model.board, model.score);
     controller.movePiece();   //moves piece down

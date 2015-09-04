@@ -8,7 +8,6 @@ view = {
     $(document).keydown(function(event){
       view.changePieceColumn(event);
     });
-
   },
 
   clearBoard: function(){
