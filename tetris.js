@@ -15,11 +15,17 @@ controller = {
     if (isNaN(input) || input > 3 || input < 1) {
       input = 1;
     }
-    return input;
+    return Number(input);
   },
 
   setSpeed: function(){
-    controller.loopInterval = 350 - (model.level+model.score)*10;
+    console.log('int: '+ controller.loopInterval+ ", lvl: "+ model.level + ", score: "+ model.score);
+    controller.loopInterval = 350 - (model.level+model.score)*7;
+    if (controller.loopInterval < 170){
+      console.log('something wacky');
+    }else if(controller.loopInterval < 200){
+      console.log('lets look');
+    }
   },
 
   runGame: function(){
