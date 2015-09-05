@@ -118,7 +118,7 @@ model = {
     this.pieces[1] = new model.SmallPiece(x, this.y + model.pieceSize);
     this.pieces[2] = new model.SmallPiece(x, this.y + model.pieceSize*2);
     this.pieces[3] = new model.SmallPiece(x + model.pieceSize,
-                                          y + model.pieceSize);
+                                          this.y + model.pieceSize);
   },
 
   S: function(x,y){
