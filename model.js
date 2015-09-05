@@ -58,7 +58,7 @@ model = {
 
 
   //Constructor y @ -160 to be offscreen
-  I: function(x,y){
+  I: function(x){
     this.type = 'I';
     this.width = model.pieceSize;
     this.height = model.pieceSize * 4;
@@ -74,7 +74,7 @@ model = {
   },
 
   //Constructor y @ -120 to be offscreen
-  L: function(x,y){
+  L: function(x){
     this.type = 'L';
     this.width = model.pieceSize * 2;
     this.height = model.pieceSize * 3;
@@ -89,7 +89,7 @@ model = {
                                           this.y+ model.pieceSize*2);
   },
 
-  J: function(x,y){
+  J: function(x){
     this.type = 'J';
     this.width = model.pieceSize * 2;
     this.height = model.pieceSize * 3;
@@ -106,7 +106,7 @@ model = {
     this.pieces[3] = new model.SmallPiece(x, this.y + model.pieceSize * 2);
   },
 
-  T: function(x,y){
+  T: function(x){
     this.type = 'T';
     this.width = model.pieceSize * 2;
     this.height = model.pieceSize * 3;
@@ -121,7 +121,7 @@ model = {
                                           this.y + model.pieceSize);
   },
 
-  S: function(x,y){
+  S: function(x){
     this.type = 'S';
     this.width = model.pieceSize * 2;
     this.height = model.pieceSize * 3;
@@ -137,7 +137,7 @@ model = {
                                           this.y+model.pieceSize*2);
   },
 
-  Z: function(x,y){
+  Z: function(x){
     this.type = 'Z';
     this.width = model.pieceSize * 2;
     this.height = model.pieceSize * 3;
@@ -170,7 +170,7 @@ model = {
     var originY = model.currentPiece.y;
     for (var i=0; i < model.pieces.length; i++){
       //subtract origin x and y for rotation point of shape
-      //swap x and y for clockwise rotation
+      //swap x and y and invert 1 axis for clockwise rotation
       //add origin x and y to maintain place on board
       var tmpY = model.pieces[i].x - originX; //coord set to origin
       var tmp = { x: model.pieces[i].y - originY + originX,
